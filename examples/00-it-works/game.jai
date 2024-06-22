@@ -66,7 +66,7 @@ draw :: () {
    _xy.y += 8 * dt;
 
    love.graphics.set_color(.{ .48, .88, .22, 1 });
-   love.graphics.print("everything is done from jai!", _xy.x, _xy.y);
+   love.graphics.print("Love2D + Jai???", _xy.x, _xy.y);
 
    love.graphics.set_color(.{ 1, 1, 1, 1 });
    love.graphics.draw(
@@ -78,8 +78,8 @@ draw :: () {
    love.graphics.set_color(card_color);
    love.graphics.rectangle(.Line, card_pos);
 
-   love.graphics.set_color(.{ .48, .88, .22, 0.85 });
-   love.graphics.print("I'm draggable!", card_pos.x + 10, card_pos.y + 10);
+   love.graphics.set_color(.{ 1, 0, 0, 1 });
+   love.graphics.print("I'm super draggable!", card_pos.x + 10, card_pos.y + 10);
 
    love.graphics.set_color(.{ 1, 1, 1, 1 });
    love.graphics.print(tprint("mouse: %", mouse_pos), 10, 10);
@@ -104,4 +104,8 @@ within :: (point: Vector2, rect: Vector4) -> bool {
 #import "Basic";
 #import "Math";
 
-love :: #import,file "../../module.jai"(load, update, draw);
+#poke_name love load;
+#poke_name love update;
+#poke_name love draw;
+love :: #import,file "../../module.jai";
+

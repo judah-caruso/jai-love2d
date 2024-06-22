@@ -246,16 +246,16 @@ audio :: struct {
 //    lua.call(L, 2, 0);
 // }
 // Sets a global scale factor for velocity-based doppler effects. The default scale value is 1.
-love_audio_setDopplerScale :: (scale: lua.Number) #no_context #c_call {
-   lua.getfield(L, lua.LUA_GLOBALSINDEX, "love");
-   lua.getfield(L, -1, "audio");
-   lua.getfield(L, -1, "setDopplerScale");
-   lua._remove(L, -3);
-   lua._remove(L, -2);
+// love_audio_setDopplerScale :: (scale: lua.Number) #no_context #c_call {
+//    lua.getfield(L, lua.LUA_GLOBALSINDEX, "love");
+//    lua.getfield(L, -1, "audio");
+//    lua.getfield(L, -1, "setDopplerScale");
+//    lua._remove(L, -3);
+//    lua._remove(L, -2);
 
-   lua.pushnumber(L, scale);
-   lua.call(L, 1, 0);
-}
+//    lua.pushnumber(L, scale);
+//    lua.call(L, 1, 0);
+// }
 // Defines an effect that can be applied to a Source.
 // love_audio_setEffect :: (name: *u8, settings: lua.Table) -> (success: s32) #no_context #c_call {
 //    lua.getfield(L, lua.LUA_GLOBALSINDEX, "love");

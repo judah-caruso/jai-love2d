@@ -1,4 +1,4 @@
-package.path = "./love-api/?.lua" .. package.path
+package.path = "./love-api" .. package.path
 
 local api = require("extra")(require("love_api"))
 
@@ -222,6 +222,10 @@ function generate_fn_binding(func, mod)
     for i, arg in ipairs(variant.arguments) do
       if arg ~= nil then
         local jai_type = get_jai_type(arg.type)
+
+        if arg.name == "string" then
+          arg.name = "str"
+        end
 
         arg_map[#arg_map + 1] = {
           ["name"] = arg.name,

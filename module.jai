@@ -1,15 +1,9 @@
-#module_parameters(load: Load_Proc = null, update: Update_Proc = null, draw: Draw_Proc = null, use_wrappers := true);
-
-#scope_export
-
-Load_Proc   :: #type ();
-Draw_Proc   :: #type ();
-Update_Proc :: #type (dt: float32) -> bool;
+#module_parameters(use_wrappers := true);
 
 #scope_file
 
 lib_load :: (state: *lua.State) -> s32 #no_context #c_call {
-   #if load {
+   #if #exists(load) {
       push_context lua_ctx {
          load();
       }
@@ -19,7 +13,7 @@ lib_load :: (state: *lua.State) -> s32 #no_context #c_call {
 }
 
 lib_update :: (L: *lua.State) -> s32 #no_context #c_call {
-   #if update {
+   #if #exists(update) {
       dt := lua.tonumber(L, -1);
       push_context lua_ctx {
          lua.pushboolean(L, xx update(xx dt));
@@ -30,7 +24,7 @@ lib_update :: (L: *lua.State) -> s32 #no_context #c_call {
 }
 
 lib_draw :: (L: *lua.State) -> s32 #no_context #c_call {
-   #if draw {
+   #if #exists(draw) {
       push_context lua_ctx {
          draw();
       }

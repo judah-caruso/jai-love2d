@@ -186,7 +186,7 @@ love_data_getPackedSize :: (format: *u8) -> (size: lua.Number) #no_context #c_ca
 	return lua.tonumber(L, -1);
 }
 // Compute the message digest of a string using a specified hash algorithm.
-love_data_hash :: (hashfunction: *u8, string: *u8) -> (rawdigest: *u8) #no_context #c_call {
+love_data_hash :: (hashfunction: *u8, str: *u8) -> (rawdigest: *u8) #no_context #c_call {
 	lua.getfield(L, lua.LUA_GLOBALSINDEX, "love");
 	lua.getfield(L, -1, "data");
 	lua.getfield(L, -1, "hash");
@@ -194,7 +194,7 @@ love_data_hash :: (hashfunction: *u8, string: *u8) -> (rawdigest: *u8) #no_conte
 	lua._remove(L, -2);
 
 	lua.pushstring(L, hashfunction);
-	lua.pushstring(L, string);
+	lua.pushstring(L, str);
 	lua.call(L, 2, 1);
 
 	return lua.tolstring(L, -1, null);

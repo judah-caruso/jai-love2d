@@ -1,6 +1,6 @@
-# Love2D bindings for Jai (experimental)
+# Love2D bindings for Jai
 
-This concept module allows you to create games with [Love2D](https://love2d.org) and Jai without writing any Lua code. These are very experimental, so things are a bit rough around the edges or not supported.
+This weird thing allows you to create games with [Love2D](https://love2d.org) and Jai. It works by autogenerating glue code to call into Love2D's Lua api and exposing that to Jai. All we have to do on the Jai side is compile our game code to a dynamic library that can be loaded on startup.
 
 # Instructions
 

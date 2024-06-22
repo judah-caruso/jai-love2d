@@ -1,28 +1,21 @@
 //
 // This file was auto-generated using the following command:
 //
-// jai generate.jai
+// jai ./generate.jai
 //
 
 
 
 WINVER :: 0x0501;
 
-LUA_MULTILIB :: "lib";
-
-LUA_LMULTILIB :: "lib";
-
-LUA_LROOT :: "/usr/local";
-LUA_LUADIR :: "/lua/5.1/";
-LUA_LJDIR :: "/luajit-2.1.0-beta3/";
-
-LUA_JROOT :: LUA_LROOT;
+LUA_LDIR :: "!\\lua\\";
+LUA_CDIR :: "!\\";
 
 LUA_PATH :: "LUA_PATH";
 LUA_CPATH :: "LUA_CPATH";
 LUA_INIT :: "LUA_INIT";
 
-LUA_DIRSEP :: "/";
+LUA_DIRSEP :: "\\";
 
 LUA_PATHSEP :: ";";
 LUA_PATH_MARK :: "?";
@@ -140,14 +133,14 @@ CFunction :: #type (L: *State) -> s32 #c_call;
 /*
 ** functions that read/write blocks when loading/dumping Lua chunks
 */
-Reader :: #type (L: *State, ud: *void, sz: *size_t) -> *u8 #c_call;
+Reader :: #type (L: *State, ud: *void, sz: *u64) -> *u8 #c_call;
 
-Writer :: #type (L: *State, p: *void, sz: size_t, ud: *void) -> s32 #c_call;
+Writer :: #type (L: *State, p: *void, sz: u64, ud: *void) -> s32 #c_call;
 
 /*
 ** prototype for memory-allocation functions
 */
-Alloc :: #type (ud: *void, ptr: *void, osize: size_t, nsize: size_t) -> *void #c_call;
+Alloc :: #type (ud: *void, ptr: *void, osize: u64, nsize: u64) -> *void #c_call;
 
 /* type of numbers in Lua */
 Number :: float64;
@@ -194,8 +187,8 @@ lessthan :: (L: *State, idx1: s32, idx2: s32) -> s32 #foreign liblua "lua_lessth
 tonumber :: (L: *State, idx: s32) -> Number #foreign liblua "lua_tonumber";
 tointeger :: (L: *State, idx: s32) -> Integer #foreign liblua "lua_tointeger";
 toboolean :: (L: *State, idx: s32) -> s32 #foreign liblua "lua_toboolean";
-tolstring :: (L: *State, idx: s32, len: *size_t) -> *u8 #foreign liblua "lua_tolstring";
-objlen :: (L: *State, idx: s32) -> size_t #foreign liblua "lua_objlen";
+tolstring :: (L: *State, idx: s32, len: *u64) -> *u8 #foreign liblua "lua_tolstring";
+objlen :: (L: *State, idx: s32) -> u64 #foreign liblua "lua_objlen";
 tocfunction :: (L: *State, idx: s32) -> CFunction #foreign liblua "lua_tocfunction";
 touserdata :: (L: *State, idx: s32) -> *void #foreign liblua "lua_touserdata";
 tothread :: (L: *State, idx: s32) -> *State #foreign liblua "lua_tothread";
@@ -207,7 +200,7 @@ topointer :: (L: *State, idx: s32) -> *void #foreign liblua "lua_topointer";
 pushnil :: (L: *State) -> void #foreign liblua "lua_pushnil";
 pushnumber :: (L: *State, n: Number) -> void #foreign liblua "lua_pushnumber";
 pushinteger :: (L: *State, n: Integer) -> void #foreign liblua "lua_pushinteger";
-pushlstring :: (L: *State, s: *u8, l: size_t) -> void #foreign liblua "lua_pushlstring";
+pushlstring :: (L: *State, s: *u8, l: u64) -> void #foreign liblua "lua_pushlstring";
 pushstring :: (L: *State, s: *u8) -> void #foreign liblua "lua_pushstring";
 
 pushfstring_CFormat :: (L: *State, fmt: *u8, __args: ..Any) -> *u8 #foreign liblua "lua_pushfstring";
@@ -232,7 +225,7 @@ getfield :: (L: *State, idx: s32, k: *u8) -> void #foreign liblua "lua_getfield"
 rawget :: (L: *State, idx: s32) -> void #foreign liblua "lua_rawget";
 rawgeti :: (L: *State, idx: s32, n: s32) -> void #foreign liblua "lua_rawgeti";
 createtable :: (L: *State, narr: s32, nrec: s32) -> void #foreign liblua "lua_createtable";
-newuserdata :: (L: *State, sz: size_t) -> *void #foreign liblua "lua_newuserdata";
+newuserdata :: (L: *State, sz: u64) -> *void #foreign liblua "lua_newuserdata";
 getmetatable :: (L: *State, objindex: s32) -> s32 #foreign liblua "lua_getmetatable";
 getfenv :: (L: *State, idx: s32) -> void #foreign liblua "lua_getfenv";
 
@@ -318,32 +311,6 @@ Debug :: struct {
 
     i_ci:            s32; /* active function */
 }
-#run {
-    instance: Debug;
-    assert(((cast(*void)(*instance.event)) - cast(*void)(*instance)) == 0, "Debug.event has unexpected offset % instead of 0", ((cast(*void)(*instance.event)) - cast(*void)(*instance)));
-    assert(size_of(type_of(Debug.event)) == 4, "Debug.event has unexpected size % instead of 4", size_of(type_of(Debug.event)));
-    assert(((cast(*void)(*instance.name)) - cast(*void)(*instance)) == 8, "Debug.name has unexpected offset % instead of 8", ((cast(*void)(*instance.name)) - cast(*void)(*instance)));
-    assert(size_of(type_of(Debug.name)) == 8, "Debug.name has unexpected size % instead of 8", size_of(type_of(Debug.name)));
-    assert(((cast(*void)(*instance.namewhat)) - cast(*void)(*instance)) == 16, "Debug.namewhat has unexpected offset % instead of 16", ((cast(*void)(*instance.namewhat)) - cast(*void)(*instance)));
-    assert(size_of(type_of(Debug.namewhat)) == 8, "Debug.namewhat has unexpected size % instead of 8", size_of(type_of(Debug.namewhat)));
-    assert(((cast(*void)(*instance.what)) - cast(*void)(*instance)) == 24, "Debug.what has unexpected offset % instead of 24", ((cast(*void)(*instance.what)) - cast(*void)(*instance)));
-    assert(size_of(type_of(Debug.what)) == 8, "Debug.what has unexpected size % instead of 8", size_of(type_of(Debug.what)));
-    assert(((cast(*void)(*instance.source)) - cast(*void)(*instance)) == 32, "Debug.source has unexpected offset % instead of 32", ((cast(*void)(*instance.source)) - cast(*void)(*instance)));
-    assert(size_of(type_of(Debug.source)) == 8, "Debug.source has unexpected size % instead of 8", size_of(type_of(Debug.source)));
-    assert(((cast(*void)(*instance.currentline)) - cast(*void)(*instance)) == 40, "Debug.currentline has unexpected offset % instead of 40", ((cast(*void)(*instance.currentline)) - cast(*void)(*instance)));
-    assert(size_of(type_of(Debug.currentline)) == 4, "Debug.currentline has unexpected size % instead of 4", size_of(type_of(Debug.currentline)));
-    assert(((cast(*void)(*instance.nups)) - cast(*void)(*instance)) == 44, "Debug.nups has unexpected offset % instead of 44", ((cast(*void)(*instance.nups)) - cast(*void)(*instance)));
-    assert(size_of(type_of(Debug.nups)) == 4, "Debug.nups has unexpected size % instead of 4", size_of(type_of(Debug.nups)));
-    assert(((cast(*void)(*instance.linedefined)) - cast(*void)(*instance)) == 48, "Debug.linedefined has unexpected offset % instead of 48", ((cast(*void)(*instance.linedefined)) - cast(*void)(*instance)));
-    assert(size_of(type_of(Debug.linedefined)) == 4, "Debug.linedefined has unexpected size % instead of 4", size_of(type_of(Debug.linedefined)));
-    assert(((cast(*void)(*instance.lastlinedefined)) - cast(*void)(*instance)) == 52, "Debug.lastlinedefined has unexpected offset % instead of 52", ((cast(*void)(*instance.lastlinedefined)) - cast(*void)(*instance)));
-    assert(size_of(type_of(Debug.lastlinedefined)) == 4, "Debug.lastlinedefined has unexpected size % instead of 4", size_of(type_of(Debug.lastlinedefined)));
-    assert(((cast(*void)(*instance.short_src)) - cast(*void)(*instance)) == 56, "Debug.short_src has unexpected offset % instead of 56", ((cast(*void)(*instance.short_src)) - cast(*void)(*instance)));
-    assert(size_of(type_of(Debug.short_src)) == 60, "Debug.short_src has unexpected size % instead of 60", size_of(type_of(Debug.short_src)));
-    assert(((cast(*void)(*instance.i_ci)) - cast(*void)(*instance)) == 116, "Debug.i_ci has unexpected offset % instead of 116", ((cast(*void)(*instance.i_ci)) - cast(*void)(*instance)));
-    assert(size_of(type_of(Debug.i_ci)) == 4, "Debug.i_ci has unexpected size % instead of 4", size_of(type_of(Debug.i_ci)));
-    assert(size_of(Debug) == 120, "Debug has size % instead of 120", size_of(Debug));
-}
 
 luaopen_base :: (L: *State) -> s32 #foreign liblua;
 luaopen_math :: (L: *State) -> s32 #foreign liblua;
@@ -364,14 +331,6 @@ luaL_Reg :: struct {
     name: *u8;
     func: CFunction;
 }
-#run {
-    instance: luaL_Reg;
-    assert(((cast(*void)(*instance.name)) - cast(*void)(*instance)) == 0, "luaL_Reg.name has unexpected offset % instead of 0", ((cast(*void)(*instance.name)) - cast(*void)(*instance)));
-    assert(size_of(type_of(luaL_Reg.name)) == 8, "luaL_Reg.name has unexpected size % instead of 8", size_of(type_of(luaL_Reg.name)));
-    assert(((cast(*void)(*instance.func)) - cast(*void)(*instance)) == 8, "luaL_Reg.func has unexpected offset % instead of 8", ((cast(*void)(*instance.func)) - cast(*void)(*instance)));
-    assert(size_of(type_of(luaL_Reg.func)) == 8, "luaL_Reg.func has unexpected size % instead of 8", size_of(type_of(luaL_Reg.func)));
-    assert(size_of(luaL_Reg) == 16, "luaL_Reg has size % instead of 16", size_of(luaL_Reg));
-}
 
 luaL_openlib :: (L: *State, libname: *u8, l: *luaL_Reg, nup: s32) -> void #foreign liblua;
 
@@ -381,9 +340,9 @@ luaL_getmetafield :: (L: *State, obj: s32, e: *u8) -> s32 #foreign liblua;
 luaL_callmeta :: (L: *State, obj: s32, e: *u8) -> s32 #foreign liblua;
 luaL_typerror :: (L: *State, narg: s32, tname: *u8) -> s32 #foreign liblua;
 luaL_argerror :: (L: *State, numarg: s32, extramsg: *u8) -> s32 #foreign liblua;
-luaL_checklstring :: (L: *State, numArg: s32, l: *size_t) -> *u8 #foreign liblua;
+luaL_checklstring :: (L: *State, numArg: s32, l: *u64) -> *u8 #foreign liblua;
 
-luaL_optlstring :: (L: *State, numArg: s32, def: *u8, l: *size_t) -> *u8 #foreign liblua;
+luaL_optlstring :: (L: *State, numArg: s32, def: *u8, l: *u64) -> *u8 #foreign liblua;
 
 luaL_checknumber :: (L: *State, numArg: s32) -> Number #foreign liblua;
 luaL_optnumber :: (L: *State, nArg: s32, def: Number) -> Number #foreign liblua;
@@ -415,7 +374,7 @@ luaL_ref :: (L: *State, t: s32) -> s32 #foreign liblua;
 luaL_unref :: (L: *State, t: s32, ref: s32) -> void #foreign liblua;
 
 luaL_loadfile :: (L: *State, filename: *u8) -> s32 #foreign liblua;
-luaL_loadbuffer :: (L: *State, buff: *u8, sz: size_t, name: *u8) -> s32 #foreign liblua;
+luaL_loadbuffer :: (L: *State, buff: *u8, sz: u64, name: *u8) -> s32 #foreign liblua;
 
 luaL_loadstring :: (L: *State, s: *u8) -> s32 #foreign liblua;
 
@@ -430,7 +389,7 @@ luaL_fileresult :: (L: *State, stat: s32, fname: *u8) -> s32 #foreign liblua;
 luaL_execresult :: (L: *State, stat: s32) -> s32 #foreign liblua;
 luaL_loadfilex :: (L: *State, filename: *u8, mode: *u8) -> s32 #foreign liblua;
 
-luaL_loadbufferx :: (L: *State, buff: *u8, sz: size_t, name: *u8, mode: *u8) -> s32 #foreign liblua;
+luaL_loadbufferx :: (L: *State, buff: *u8, sz: u64, name: *u8, mode: *u8) -> s32 #foreign liblua;
 
 luaL_traceback :: (L: *State, L1: *State, msg: *u8, level: s32) -> void #foreign liblua;
 
@@ -449,29 +408,17 @@ luaL_Buffer :: struct {
     p:      *u8; /* current position in buffer */
     lvl:    s32; /* number of strings in the stack (level) */
     L:      *State;
-    buffer: [1024] u8;
-}
-#run {
-    instance: luaL_Buffer;
-    assert(((cast(*void)(*instance.p)) - cast(*void)(*instance)) == 0, "luaL_Buffer.p has unexpected offset % instead of 0", ((cast(*void)(*instance.p)) - cast(*void)(*instance)));
-    assert(size_of(type_of(luaL_Buffer.p)) == 8, "luaL_Buffer.p has unexpected size % instead of 8", size_of(type_of(luaL_Buffer.p)));
-    assert(((cast(*void)(*instance.lvl)) - cast(*void)(*instance)) == 8, "luaL_Buffer.lvl has unexpected offset % instead of 8", ((cast(*void)(*instance.lvl)) - cast(*void)(*instance)));
-    assert(size_of(type_of(luaL_Buffer.lvl)) == 4, "luaL_Buffer.lvl has unexpected size % instead of 4", size_of(type_of(luaL_Buffer.lvl)));
-    assert(((cast(*void)(*instance.L)) - cast(*void)(*instance)) == 16, "luaL_Buffer.L has unexpected offset % instead of 16", ((cast(*void)(*instance.L)) - cast(*void)(*instance)));
-    assert(size_of(type_of(luaL_Buffer.L)) == 8, "luaL_Buffer.L has unexpected size % instead of 8", size_of(type_of(luaL_Buffer.L)));
-    assert(((cast(*void)(*instance.buffer)) - cast(*void)(*instance)) == 24, "luaL_Buffer.buffer has unexpected offset % instead of 24", ((cast(*void)(*instance.buffer)) - cast(*void)(*instance)));
-    assert(size_of(type_of(luaL_Buffer.buffer)) == 1024, "luaL_Buffer.buffer has unexpected size % instead of 1024", size_of(type_of(luaL_Buffer.buffer)));
-    assert(size_of(luaL_Buffer) == 1048, "luaL_Buffer has size % instead of 1048", size_of(luaL_Buffer));
+    buffer: [512] u8;
 }
 
 luaL_buffinit :: (L: *State, B: *luaL_Buffer) -> void #foreign liblua;
 luaL_prepbuffer :: (B: *luaL_Buffer) -> *u8 #foreign liblua;
-luaL_addlstring :: (B: *luaL_Buffer, s: *u8, l: size_t) -> void #foreign liblua;
+luaL_addlstring :: (B: *luaL_Buffer, s: *u8, l: u64) -> void #foreign liblua;
 luaL_addstring :: (B: *luaL_Buffer, s: *u8) -> void #foreign liblua;
 luaL_addvalue :: (B: *luaL_Buffer) -> void #foreign liblua;
 luaL_pushresult :: (B: *luaL_Buffer) -> void #foreign liblua;
 
-LUAJIT_MODE :: enum u32 {
+LUAJIT_MODE :: enum s32 {
     ENGINE     :: 0;
     DEBUG      :: 1;
 
@@ -508,12 +455,64 @@ luaJIT_profile_callback :: #type (data: *void, L: *State, samples: s32, vmstate:
 luaJIT_profile_start :: (L: *State, mode: *u8, cb: luaJIT_profile_callback, data: *void) -> void #foreign liblua;
 
 luaJIT_profile_stop :: (L: *State) -> void #foreign liblua;
-luaJIT_profile_dumpstack :: (L: *State, fmt: *u8, depth: s32, len: *size_t) -> *u8 #foreign liblua;
+luaJIT_profile_dumpstack :: (L: *State, fmt: *u8, depth: s32, len: *u64) -> *u8 #foreign liblua;
 
 luaJIT_version_2_1_0_beta3 :: () -> void #foreign liblua;
 
 #scope_file
 
-#import "Basic"; // For assert
+#import "Basic"; // For assert, push_context
 
-liblua :: #library "lib/mac/liblua";
+liblua :: #library "lib/windows/liblua";
+
+#run {
+    {
+        instance: Debug;
+        assert(((cast(*void)(*instance.event)) - cast(*void)(*instance)) == 0, "Debug.event has unexpected offset % instead of 0", ((cast(*void)(*instance.event)) - cast(*void)(*instance)));
+        assert(size_of(type_of(Debug.event)) == 4, "Debug.event has unexpected size % instead of 4", size_of(type_of(Debug.event)));
+        assert(((cast(*void)(*instance.name)) - cast(*void)(*instance)) == 8, "Debug.name has unexpected offset % instead of 8", ((cast(*void)(*instance.name)) - cast(*void)(*instance)));
+        assert(size_of(type_of(Debug.name)) == 8, "Debug.name has unexpected size % instead of 8", size_of(type_of(Debug.name)));
+        assert(((cast(*void)(*instance.namewhat)) - cast(*void)(*instance)) == 16, "Debug.namewhat has unexpected offset % instead of 16", ((cast(*void)(*instance.namewhat)) - cast(*void)(*instance)));
+        assert(size_of(type_of(Debug.namewhat)) == 8, "Debug.namewhat has unexpected size % instead of 8", size_of(type_of(Debug.namewhat)));
+        assert(((cast(*void)(*instance.what)) - cast(*void)(*instance)) == 24, "Debug.what has unexpected offset % instead of 24", ((cast(*void)(*instance.what)) - cast(*void)(*instance)));
+        assert(size_of(type_of(Debug.what)) == 8, "Debug.what has unexpected size % instead of 8", size_of(type_of(Debug.what)));
+        assert(((cast(*void)(*instance.source)) - cast(*void)(*instance)) == 32, "Debug.source has unexpected offset % instead of 32", ((cast(*void)(*instance.source)) - cast(*void)(*instance)));
+        assert(size_of(type_of(Debug.source)) == 8, "Debug.source has unexpected size % instead of 8", size_of(type_of(Debug.source)));
+        assert(((cast(*void)(*instance.currentline)) - cast(*void)(*instance)) == 40, "Debug.currentline has unexpected offset % instead of 40", ((cast(*void)(*instance.currentline)) - cast(*void)(*instance)));
+        assert(size_of(type_of(Debug.currentline)) == 4, "Debug.currentline has unexpected size % instead of 4", size_of(type_of(Debug.currentline)));
+        assert(((cast(*void)(*instance.nups)) - cast(*void)(*instance)) == 44, "Debug.nups has unexpected offset % instead of 44", ((cast(*void)(*instance.nups)) - cast(*void)(*instance)));
+        assert(size_of(type_of(Debug.nups)) == 4, "Debug.nups has unexpected size % instead of 4", size_of(type_of(Debug.nups)));
+        assert(((cast(*void)(*instance.linedefined)) - cast(*void)(*instance)) == 48, "Debug.linedefined has unexpected offset % instead of 48", ((cast(*void)(*instance.linedefined)) - cast(*void)(*instance)));
+        assert(size_of(type_of(Debug.linedefined)) == 4, "Debug.linedefined has unexpected size % instead of 4", size_of(type_of(Debug.linedefined)));
+        assert(((cast(*void)(*instance.lastlinedefined)) - cast(*void)(*instance)) == 52, "Debug.lastlinedefined has unexpected offset % instead of 52", ((cast(*void)(*instance.lastlinedefined)) - cast(*void)(*instance)));
+        assert(size_of(type_of(Debug.lastlinedefined)) == 4, "Debug.lastlinedefined has unexpected size % instead of 4", size_of(type_of(Debug.lastlinedefined)));
+        assert(((cast(*void)(*instance.short_src)) - cast(*void)(*instance)) == 56, "Debug.short_src has unexpected offset % instead of 56", ((cast(*void)(*instance.short_src)) - cast(*void)(*instance)));
+        assert(size_of(type_of(Debug.short_src)) == 60, "Debug.short_src has unexpected size % instead of 60", size_of(type_of(Debug.short_src)));
+        assert(((cast(*void)(*instance.i_ci)) - cast(*void)(*instance)) == 116, "Debug.i_ci has unexpected offset % instead of 116", ((cast(*void)(*instance.i_ci)) - cast(*void)(*instance)));
+        assert(size_of(type_of(Debug.i_ci)) == 4, "Debug.i_ci has unexpected size % instead of 4", size_of(type_of(Debug.i_ci)));
+        assert(size_of(Debug) == 120, "Debug has size % instead of 120", size_of(Debug));
+    }
+
+    {
+        instance: luaL_Reg;
+        assert(((cast(*void)(*instance.name)) - cast(*void)(*instance)) == 0, "luaL_Reg.name has unexpected offset % instead of 0", ((cast(*void)(*instance.name)) - cast(*void)(*instance)));
+        assert(size_of(type_of(luaL_Reg.name)) == 8, "luaL_Reg.name has unexpected size % instead of 8", size_of(type_of(luaL_Reg.name)));
+        assert(((cast(*void)(*instance.func)) - cast(*void)(*instance)) == 8, "luaL_Reg.func has unexpected offset % instead of 8", ((cast(*void)(*instance.func)) - cast(*void)(*instance)));
+        assert(size_of(type_of(luaL_Reg.func)) == 8, "luaL_Reg.func has unexpected size % instead of 8", size_of(type_of(luaL_Reg.func)));
+        assert(size_of(luaL_Reg) == 16, "luaL_Reg has size % instead of 16", size_of(luaL_Reg));
+    }
+
+    {
+        instance: luaL_Buffer;
+        assert(((cast(*void)(*instance.p)) - cast(*void)(*instance)) == 0, "luaL_Buffer.p has unexpected offset % instead of 0", ((cast(*void)(*instance.p)) - cast(*void)(*instance)));
+        assert(size_of(type_of(luaL_Buffer.p)) == 8, "luaL_Buffer.p has unexpected size % instead of 8", size_of(type_of(luaL_Buffer.p)));
+        assert(((cast(*void)(*instance.lvl)) - cast(*void)(*instance)) == 8, "luaL_Buffer.lvl has unexpected offset % instead of 8", ((cast(*void)(*instance.lvl)) - cast(*void)(*instance)));
+        assert(size_of(type_of(luaL_Buffer.lvl)) == 4, "luaL_Buffer.lvl has unexpected size % instead of 4", size_of(type_of(luaL_Buffer.lvl)));
+        assert(((cast(*void)(*instance.L)) - cast(*void)(*instance)) == 16, "luaL_Buffer.L has unexpected offset % instead of 16", ((cast(*void)(*instance.L)) - cast(*void)(*instance)));
+        assert(size_of(type_of(luaL_Buffer.L)) == 8, "luaL_Buffer.L has unexpected size % instead of 8", size_of(type_of(luaL_Buffer.L)));
+        assert(((cast(*void)(*instance.buffer)) - cast(*void)(*instance)) == 24, "luaL_Buffer.buffer has unexpected offset % instead of 24", ((cast(*void)(*instance.buffer)) - cast(*void)(*instance)));
+        assert(size_of(type_of(luaL_Buffer.buffer)) == 512, "luaL_Buffer.buffer has unexpected size % instead of 512", size_of(type_of(luaL_Buffer.buffer)));
+        assert(size_of(luaL_Buffer) == 536, "luaL_Buffer has size % instead of 536", size_of(luaL_Buffer));
+    }
+}
+

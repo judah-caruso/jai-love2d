@@ -25,4 +25,9 @@ graphics :: struct {
       mode_str := temp_c_string(DrawModeMap[mode]);
       love_graphics_rectangle(mode_str, pos.x, pos.y, pos.z, pos.w);
    }
+
+   get_dimensions :: inline () -> (int, int) {
+      dim := love_graphics_getDimensions();
+      return xx dim._width, xx dim._height;
+   }
 }
